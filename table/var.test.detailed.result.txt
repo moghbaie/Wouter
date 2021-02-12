@@ -1,0 +1,439 @@
+[1] "HEK293T_insol"
+[1] "FUS"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_WT_1 LFQ.intensity.U2OS_wcl_WT_2 LFQ.intensity.U2OS_wcl_WT_3 LFQ.intensity.U2OS_wcl_WT_4
+                        <dbl>                       <dbl>                       <dbl>                       <dbl>
+1                        25.4                        25.2                        25.2                        25.3
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_ATM_1 LFQ.intensity.U2OS_wcl_ATM_2 LFQ.intensity.U2OS_wcl_ATM_3 LFQ.intensity.U2OS_wcl_ATM_4
+                         <dbl>                        <dbl>                        <dbl>                        <dbl>
+1                         25.4                         25.4                         25.2                         25.5
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 6.8572, num df = 3, denom df = 3, p-value = 0.1481
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+   0.4441401 105.8689486
+sample estimates:
+ratio of variances 
+           6.85716 
+
+[1] "HEK293T_insol"
+[1] "TARDBP"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_DMSO_1 LFQ.intensity.HEK293T_insol_DMSO_2 LFQ.intensity.HEK293T_insol_DMSO_3 LFQ.intensity.HEK293T_insol_DMSO_4
+                               <dbl>                              <dbl>                              <dbl>                              <dbl>
+1                               21.5                               22.7                               20.4                               17.1
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_CPT_1 LFQ.intensity.HEK293T_insol_CPT_2 LFQ.intensity.HEK293T_insol_CPT_3 LFQ.intensity.HEK293T_insol_CPT_4
+                              <dbl>                             <dbl>                             <dbl>                             <dbl>
+1                              22.8                              22.0                              20.9                              20.9
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.50716, num df = 3, denom df = 3, p-value = 0.5912
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.03284897 7.83015468
+sample estimates:
+ratio of variances 
+         0.5071612 
+
+[1] "HEK293T_insol"
+[1] "MATR3"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_DMSO_1 LFQ.intensity.HEK293T_insol_DMSO_2 LFQ.intensity.HEK293T_insol_DMSO_3 LFQ.intensity.HEK293T_insol_DMSO_4
+                               <dbl>                              <dbl>                              <dbl>                              <dbl>
+1                               19.1                               19.2                               19.5                               19.9
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_CPT_1 LFQ.intensity.HEK293T_insol_CPT_2 LFQ.intensity.HEK293T_insol_CPT_3 LFQ.intensity.HEK293T_insol_CPT_4
+                              <dbl>                             <dbl>                             <dbl>                             <dbl>
+1                              21.2                              20.4                              21.5                              20.8
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 7.1306, num df = 3, denom df = 3, p-value = 0.1409
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+   0.4618479 110.0899342
+sample estimates:
+ratio of variances 
+          7.130555 
+
+[1] "HEK293T_insol"
+[1] "HNRNPA1"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_DMSO_1 LFQ.intensity.HEK293T_insol_DMSO_2 LFQ.intensity.HEK293T_insol_DMSO_3 LFQ.intensity.HEK293T_insol_DMSO_4
+                               <dbl>                              <dbl>                              <dbl>                              <dbl>
+1                               22.0                               20.1                               20.5                               17.2
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_CPT_1 LFQ.intensity.HEK293T_insol_CPT_2 LFQ.intensity.HEK293T_insol_CPT_3 LFQ.intensity.HEK293T_insol_CPT_4
+                              <dbl>                             <dbl>                             <dbl>                             <dbl>
+1                              23.9                              22.6                              23.4                              22.2
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 1.2946, num df = 3, denom df = 3, p-value = 0.837
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.08385014 19.98721856
+sample estimates:
+ratio of variances 
+          1.294578 
+
+[1] "HEK293T_insol"
+[1] "HNRNPA2B1"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_DMSO_1 LFQ.intensity.HEK293T_insol_DMSO_2 LFQ.intensity.HEK293T_insol_DMSO_3 LFQ.intensity.HEK293T_insol_DMSO_4
+                               <dbl>                              <dbl>                              <dbl>                              <dbl>
+1                               24.5                               24.0                               23.1                               22.7
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_CPT_1 LFQ.intensity.HEK293T_insol_CPT_2 LFQ.intensity.HEK293T_insol_CPT_3 LFQ.intensity.HEK293T_insol_CPT_4
+                              <dbl>                             <dbl>                             <dbl>                             <dbl>
+1                              25.7                              24.3                              24.5                              24.0
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.2462, num df = 3, denom df = 3, p-value = 0.2798
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.01594633 3.80110148
+sample estimates:
+ratio of variances 
+         0.2461984 
+
+[1] "U2OS_insol"
+[1] "FUS"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_DMSO_1 LFQ.intensity.HEK293T_insol_DMSO_2 LFQ.intensity.HEK293T_insol_DMSO_3 LFQ.intensity.HEK293T_insol_DMSO_4
+                               <dbl>                              <dbl>                              <dbl>                              <dbl>
+1                               24.7                               24.5                               23.8                               23.7
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_insol_CPT_1 LFQ.intensity.HEK293T_insol_CPT_2 LFQ.intensity.HEK293T_insol_CPT_3 LFQ.intensity.HEK293T_insol_CPT_4
+                              <dbl>                             <dbl>                             <dbl>                             <dbl>
+1                              26.3                              24.0                              24.8                              24.2
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 1.6713, num df = 3, denom df = 3, p-value = 0.6834
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.1082516 25.8037618
+sample estimates:
+ratio of variances 
+          1.671317 
+
+[1] "U2OS_insol"
+[1] "TARDBP"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_WT_1 LFQ.intensity.U2OS_insol_WT_2 LFQ.intensity.U2OS_insol_WT_3 LFQ.intensity.U2OS_insol_WT_4
+                          <dbl>                         <dbl>                         <dbl>                         <dbl>
+1                          25.6                          26.2                          25.7                          26.1
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_ATM_1 LFQ.intensity.U2OS_insol_ATM_2 LFQ.intensity.U2OS_insol_ATM_3 LFQ.intensity.U2OS_insol_ATM_4
+                           <dbl>                          <dbl>                          <dbl>                          <dbl>
+1                           25.7                           25.4                           25.9                           25.9
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 3.5064, num df = 3, denom df = 3, p-value = 0.3303
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.2271107 54.1360151
+sample estimates:
+ratio of variances 
+          3.506404 
+
+[1] "U2OS_insol"
+[1] "MATR3"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_WT_1 LFQ.intensity.U2OS_insol_WT_2 LFQ.intensity.U2OS_insol_WT_3 LFQ.intensity.U2OS_insol_WT_4
+                          <dbl>                         <dbl>                         <dbl>                         <dbl>
+1                          25.2                          25.6                          25.0                          24.9
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_ATM_1 LFQ.intensity.U2OS_insol_ATM_2 LFQ.intensity.U2OS_insol_ATM_3 LFQ.intensity.U2OS_insol_ATM_4
+                           <dbl>                          <dbl>                          <dbl>                          <dbl>
+1                           25.1                           25.2                           25.0                           24.9
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.87646, num df = 3, denom df = 3, p-value = 0.9162
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.05676861 13.53183984
+sample estimates:
+ratio of variances 
+         0.8764609 
+
+[1] "U2OS_insol"
+[1] "HNRNPA1"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_WT_1 LFQ.intensity.U2OS_insol_WT_2 LFQ.intensity.U2OS_insol_WT_3 LFQ.intensity.U2OS_insol_WT_4
+                          <dbl>                         <dbl>                         <dbl>                         <dbl>
+1                          27.0                          27.2                          27.3                          27.1
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_ATM_1 LFQ.intensity.U2OS_insol_ATM_2 LFQ.intensity.U2OS_insol_ATM_3 LFQ.intensity.U2OS_insol_ATM_4
+                           <dbl>                          <dbl>                          <dbl>                          <dbl>
+1                           27.2                           27.2                           27.4                           27.3
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.16557, num df = 3, denom df = 3, p-value = 0.1738
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.01072406 2.55627595
+sample estimates:
+ratio of variances 
+         0.1655707 
+
+[1] "U2OS_insol"
+[1] "HNRNPA2B1"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_WT_1 LFQ.intensity.U2OS_insol_WT_2 LFQ.intensity.U2OS_insol_WT_3 LFQ.intensity.U2OS_insol_WT_4
+                          <dbl>                         <dbl>                         <dbl>                         <dbl>
+1                          27.3                          27.0                          27.3                          27.5
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_ATM_1 LFQ.intensity.U2OS_insol_ATM_2 LFQ.intensity.U2OS_insol_ATM_3 LFQ.intensity.U2OS_insol_ATM_4
+                           <dbl>                          <dbl>                          <dbl>                          <dbl>
+1                           27.0                           27.0                           27.9                           27.9
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.13614, num df = 3, denom df = 3, p-value = 0.1357
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.008817744 2.101871045
+sample estimates:
+ratio of variances 
+         0.1361388 
+
+[1] "HEK293T_wcl"
+[1] "FUS"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_WT_1 LFQ.intensity.U2OS_insol_WT_2 LFQ.intensity.U2OS_insol_WT_3 LFQ.intensity.U2OS_insol_WT_4
+                          <dbl>                         <dbl>                         <dbl>                         <dbl>
+1                          27.0                          27.2                          27.6                          27.2
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_insol_ATM_1 LFQ.intensity.U2OS_insol_ATM_2 LFQ.intensity.U2OS_insol_ATM_3 LFQ.intensity.U2OS_insol_ATM_4
+                           <dbl>                          <dbl>                          <dbl>                          <dbl>
+1                           26.7                           26.7                           27.6                           28.1
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 3.1878, num df = 3, denom df = 3, p-value = 0.3665
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.2064779 49.2177936
+sample estimates:
+ratio of variances 
+           3.18785 
+
+[1] "HEK293T_wcl"
+[1] "TARDBP"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_DMSO_1 LFQ.intensity.HEK293T_wcl_DMSO_2 LFQ.intensity.HEK293T_wcl_DMSO_3 LFQ.intensity.HEK293T_wcl_DMSO_4
+                             <dbl>                            <dbl>                            <dbl>                            <dbl>
+1                             23.9                             24.2                             24.1                             24.1
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_CPT_1 LFQ.intensity.HEK293T_wcl_CPT_2 LFQ.intensity.HEK293T_wcl_CPT_3 LFQ.intensity.HEK293T_wcl_CPT_4
+                            <dbl>                           <dbl>                           <dbl>                           <dbl>
+1                            24.0                            24.1                            24.1                            24.0
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.44982, num df = 3, denom df = 3, p-value = 0.5287
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.02913467 6.94478278
+sample estimates:
+ratio of variances 
+         0.4498155 
+
+[1] "HEK293T_wcl"
+[1] "MATR3"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_DMSO_1 LFQ.intensity.HEK293T_wcl_DMSO_2 LFQ.intensity.HEK293T_wcl_DMSO_3 LFQ.intensity.HEK293T_wcl_DMSO_4
+                             <dbl>                            <dbl>                            <dbl>                            <dbl>
+1                             21.7                             21.7                             21.7                             21.7
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_CPT_1 LFQ.intensity.HEK293T_wcl_CPT_2 LFQ.intensity.HEK293T_wcl_CPT_3 LFQ.intensity.HEK293T_wcl_CPT_4
+                            <dbl>                           <dbl>                           <dbl>                           <dbl>
+1                            21.7                            21.6                            21.6                            21.7
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 6.6195, num df = 3, denom df = 3, p-value = 0.1549
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+   0.4287449 102.1992155
+sample estimates:
+ratio of variances 
+          6.619471 
+
+[1] "HEK293T_wcl"
+[1] "HNRNPA1"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_DMSO_1 LFQ.intensity.HEK293T_wcl_DMSO_2 LFQ.intensity.HEK293T_wcl_DMSO_3 LFQ.intensity.HEK293T_wcl_DMSO_4
+                             <dbl>                            <dbl>                            <dbl>                            <dbl>
+1                             24.6                             24.7                             24.8                             24.7
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_CPT_1 LFQ.intensity.HEK293T_wcl_CPT_2 LFQ.intensity.HEK293T_wcl_CPT_3 LFQ.intensity.HEK293T_wcl_CPT_4
+                            <dbl>                           <dbl>                           <dbl>                           <dbl>
+1                            24.5                            24.4                            24.4                            24.4
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 1.0438, num df = 3, denom df = 3, p-value = 0.9727
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.06760783 16.11556762
+sample estimates:
+ratio of variances 
+           1.04381 
+
+[1] "HEK293T_wcl"
+[1] "HNRNPA2B1"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_DMSO_1 LFQ.intensity.HEK293T_wcl_DMSO_2 LFQ.intensity.HEK293T_wcl_DMSO_3 LFQ.intensity.HEK293T_wcl_DMSO_4
+                             <dbl>                            <dbl>                            <dbl>                            <dbl>
+1                             26.5                             26.6                             26.6                             26.6
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_CPT_1 LFQ.intensity.HEK293T_wcl_CPT_2 LFQ.intensity.HEK293T_wcl_CPT_3 LFQ.intensity.HEK293T_wcl_CPT_4
+                            <dbl>                           <dbl>                           <dbl>                           <dbl>
+1                            26.3                            26.2                            26.1                            26.3
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 1.4286, num df = 3, denom df = 3, p-value = 0.7765
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.09253001 22.05622568
+sample estimates:
+ratio of variances 
+          1.428588 
+
+[1] "U2OS_wcl"
+[1] "FUS"
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_DMSO_1 LFQ.intensity.HEK293T_wcl_DMSO_2 LFQ.intensity.HEK293T_wcl_DMSO_3 LFQ.intensity.HEK293T_wcl_DMSO_4
+                             <dbl>                            <dbl>                            <dbl>                            <dbl>
+1                             27.3                             27.2                             27.2                             27.2
+# A tibble: 1 x 4
+  LFQ.intensity.HEK293T_wcl_CPT_1 LFQ.intensity.HEK293T_wcl_CPT_2 LFQ.intensity.HEK293T_wcl_CPT_3 LFQ.intensity.HEK293T_wcl_CPT_4
+                            <dbl>                           <dbl>                           <dbl>                           <dbl>
+1                            26.8                            26.8                            26.7                            26.7
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 2.0122, num df = 3, denom df = 3, p-value = 0.5803
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.1303303 31.0666076
+sample estimates:
+ratio of variances 
+          2.012193 
+
+[1] "U2OS_wcl"
+[1] "TARDBP"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_WT_1 LFQ.intensity.U2OS_wcl_WT_2 LFQ.intensity.U2OS_wcl_WT_3 LFQ.intensity.U2OS_wcl_WT_4
+                        <dbl>                       <dbl>                       <dbl>                       <dbl>
+1                        27.5                        27.8                        27.3                        27.8
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_ATM_1 LFQ.intensity.U2OS_wcl_ATM_2 LFQ.intensity.U2OS_wcl_ATM_3 LFQ.intensity.U2OS_wcl_ATM_4
+                         <dbl>                        <dbl>                        <dbl>                        <dbl>
+1                         27.9                         28.1                         27.7                         28.0
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.51855, num df = 3, denom df = 3, p-value = 0.6032
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.0335869 8.0060540
+sample estimates:
+ratio of variances 
+         0.5185543 
+
+[1] "U2OS_wcl"
+[1] "MATR3"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_WT_1 LFQ.intensity.U2OS_wcl_WT_2 LFQ.intensity.U2OS_wcl_WT_3 LFQ.intensity.U2OS_wcl_WT_4
+                        <dbl>                       <dbl>                       <dbl>                       <dbl>
+1                        25.4                        25.2                        25.2                        25.3
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_ATM_1 LFQ.intensity.U2OS_wcl_ATM_2 LFQ.intensity.U2OS_wcl_ATM_3 LFQ.intensity.U2OS_wcl_ATM_4
+                         <dbl>                        <dbl>                        <dbl>                        <dbl>
+1                         25.4                         25.4                         25.2                         25.5
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 1.3629, num df = 3, denom df = 3, p-value = 0.8052
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.08827492 21.04194643
+sample estimates:
+ratio of variances 
+          1.362893 
+
+[1] "U2OS_wcl"
+[1] "HNRNPA1"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_WT_1 LFQ.intensity.U2OS_wcl_WT_2 LFQ.intensity.U2OS_wcl_WT_3 LFQ.intensity.U2OS_wcl_WT_4
+                        <dbl>                       <dbl>                       <dbl>                       <dbl>
+1                        28.1                        28.3                        28.2                        28.4
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_ATM_1 LFQ.intensity.U2OS_wcl_ATM_2 LFQ.intensity.U2OS_wcl_ATM_3 LFQ.intensity.U2OS_wcl_ATM_4
+                         <dbl>                        <dbl>                        <dbl>                        <dbl>
+1                         28.1                         28.4                         28.4                         28.3
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.39859, num df = 3, denom df = 3, p-value = 0.4699
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.02581705 6.15396681
+sample estimates:
+ratio of variances 
+         0.3985941 
+
+[1] "U2OS_wcl"
+[1] "HNRNPA2B1"
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_WT_1 LFQ.intensity.U2OS_wcl_WT_2 LFQ.intensity.U2OS_wcl_WT_3 LFQ.intensity.U2OS_wcl_WT_4
+                        <dbl>                       <dbl>                       <dbl>                       <dbl>
+1                        29.8                        29.9                        29.7                        29.9
+# A tibble: 1 x 4
+  LFQ.intensity.U2OS_wcl_ATM_1 LFQ.intensity.U2OS_wcl_ATM_2 LFQ.intensity.U2OS_wcl_ATM_3 LFQ.intensity.U2OS_wcl_ATM_4
+                         <dbl>                        <dbl>                        <dbl>                        <dbl>
+1                         29.7                         30.0                         29.9                         29.9
+
+	F test to compare two variances
+
+data:  unlist(x) and unlist(y)
+F = 0.70666, num df = 3, denom df = 3, p-value = 0.7822
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+  0.04577059 10.91026075
+sample estimates:
+ratio of variances 
+         0.7066605 
