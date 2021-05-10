@@ -43,8 +43,7 @@ TemplateProtein$set("public","importInput", function(input.dir){
   self$dp <- read.delim(file.path(self$input.dir,"Phospho (STY)Sites.txt"))
   
   invisible(self)
-}
-)
+})
 
 TemplateProtein$set("public","removeContaminant", function(){
   print("Removing contaminant proteins and reversed sequences")
@@ -72,8 +71,6 @@ TemplateProtein$set("public","removeContaminant", function(){
   
   invisible(self)
 })
-
-
 
 TemplateProtein$set("public","transformData", function(){
   print("Log transformation from intensities")
@@ -116,15 +113,13 @@ TemplateProtein$set("public","choosingConditions", function(Comparison){
   invisible(self)
 })
 
-TemplateProtein$set("public","visualize", function(Comparison){
+TemplateProtein$set("public","anovaAnalysis", function(Comparison){
   print("Performing imputation and t-test")
   df <- self$df_log_revised 
   cells <- unique(Comparison[,1])
   extract <- unique(Comparison[,3])
   grid <- expand.grid(cells,extract)
   
-  cl <- parallel::makeCluster(parallel::detectCores()-1)
-  doParallel::registerDoParallel(cl)
   
   for(i in 1:dim(grid)[1]){
     grid[i,]
@@ -137,21 +132,14 @@ TemplateProtein$set("public","visualize", function(Comparison){
     dfnz <- df[apply(df[,c(case_reps, control_reps)],1,sum)!=0,]
     print(paste('imputing',paste(grid[i,])))
     
-    
-    
-    ddd <- foreach(seed=1:100, .combine='rbind', .packages = c("doParallel"), .export =c("impute", "calculate_stats_nonzeros","impute_all_zeros","min_col","count_zeros","na_zeros_impute","impute_partial_zeros")) %dopar% {
-      set.seed(seed)
-      dfi <- dfnz[,!grepl("LFQ.intensity", colnames( dfnz))]
-      cols2 <- c(colnames(dfi), case_reps, control_reps)
-      dfi <- cbind(dfi, matrix(NA, ncol=length(c(case_reps, control_reps)), nrow= dim(dfi)[1]))
-      colnames(dfi) <- cols2
-      dfi[,case_reps] <- impute(dfnz[case_reps], amm = "2", pmm = "6")
-      dfi[,control_reps] <- impute(dfnz[control_reps], amm = "2", pmm = "6")
-      return(dfi)
-    }
-    
-    dfi <- ddd %>% group_by(Protein.ID, Gene.name, Peptide.counts..unique., Fasta.headers) %>%
-      summarise(across(c(control_reps, case_reps), ~ mean(.x)))
+   
+    dfi <- dfnz[,!grepl("LFQ.intensity", colnames( dfnz))]
+    cols2 <- c(colnames(dfi), case_reps, control_reps)
+    dfi <- cbind(dfi, matrix(NA, ncol=length(c(case_reps, control_reps)), nrow= dim(dfi)[1]))
+    colnames(dfi) <- cols2
+    dfi[,case_reps] <- impute(dfnz[case_reps], amm = "2", pmm = "6")
+    dfi[,control_reps] <- impute(dfnz[control_reps], amm = "2", pmm = "6")
+  
     
     
     self$df_imputed[[paste0(as.character(unlist(grid[i,])), collapse="_")]] <- dfi
@@ -209,16 +197,10 @@ TemplateProtein$set("public","visualize", function(Comparison){
     
   }
   
-  parallel::stopCluster(cl)
-  
   invisible(self)
 })
 
-
-
-
-
-TemplateProtein$set("public","anovaAnalysis", function(Comparison){
+TemplateProtein$set("public","visualize", function(Comparison){
   dt <- self$count_records
   colnames(dt) <- 'count'
   dt$replicate <- gsub("_revB|_revC|_revD","",rownames(dt))
@@ -373,63 +355,19 @@ TemplateProtein$set("public","anovaAnalysis", function(Comparison){
   invisible(self)
 })
 
-TemplateProtein$set("public","compareRnaProtein", function(RNAInput){
+TemplateProtein$set("public","enrichment", function(){
   self$enrichment_table[["CC"]] <- list()
   self$enrichment_table[["BP"]] <- list()
-  for(name in names(RNAInput$rna_toptable)){
+  for(name in names(self$df_significant)){
     print(name)
-    cell <- unique(Comparison[Comparison[,2] %in% strsplit(name, ".vs.")[[1]],1])
     
-    dd <- RNAInput$rna_toptable[[name]]
-    dd <- dd[!grepl("NA.",dd$genes),]
-    dd$regulate <- ifelse((dd$logFC>1 &dd$FDR<0.05),1,ifelse((dd$logFC< -1 &dd$FDR<0.05),-1,0))
-    dd <- dd[dd$regulate!=0,]
-    
-    dp1 <- self$df_significant[[paste0(c(cell,"insol"), collapse="_")]]
+    dp1 <- self$df_significant[[name]]
     dp1$regulate <- ifelse((dp1$Significant=="Yes"&dp1$log2foldChange>= 1),1,ifelse((dp1$Significant=="Yes"&dp1$log2foldChange < -1),-1,0))
     
-    dp2 <- self$df_significant[[paste0(c(cell,"wcl"), collapse="_")]]
-    dp2$regulate <- ifelse((dp2$Significant=="Yes"&dp2$log2foldChange>= 1),1,ifelse((dp2$Significant=="Yes"&dp2$log2foldChange < -1),-1,0))
-    
-    dt <- data.frame(Gene = dd$genes,
-                     RNA= dd$regulate,
-                     ProtinInsol=dp1$regulate[match(dd$genes,dp1$Gene.name)],
-                     ProtinWcl= dp2$regulate[match(dd$genes,dp2$Gene.name)])
-    
-    self$regulation_table[[name]] <- dt
-    
-    dt1 <- dt[(!is.na(dt$ProtinInsol))|(!is.na(dt$ProtinWcl)),]
-    dt1 <- dt1[apply(dt1[,c("ProtinInsol","ProtinWcl")],1, function(x) (!is.na(x["ProtinInsol"]))|(!is.na(x["ProtinWcl"]))),]
-    dt1.m <- melt(dt1)
-    dt1.m$value <- ifelse(dt1.m$value==1,"Upregulated", ifelse(dt1.m$value==-1,"Downregulated","Unchanged"))
-    dt1.m$value <- as.factor(dt1.m$value)
-    
-    qd <-  ggplot(data=dt1.m, aes( variable,Gene, fill= value)) + 
-      geom_tile() +
-      scale_fill_manual(values=c("seagreen3","white","red"), limits=c("Downregulated","Unchanged",'Upregulated'))+
-      ggtitle(paste(cell, name))+
-      xlab("Experiment")
-    
-    ggsave(file=paste0("../img/proteomics/",cell,".",name,".diff_tilePlot.pdf"), qd, width=7, height=7+round((dim(dt1.m)[1]-50)/30), dpi=200)
-    ggsave(file=paste0("../img/proteomics/",cell,".",name,".diff_tilePlot.png"), qd, width=7, height=7+round((dim(dt1.m)[1]-50)/30), dpi=200)
-    
-    
-    gene <- unique(c(dd$genes,dp1$Gene.name, dp2$Gene.name))
-    countTable <- data.frame(gene = gene)
-    countTable$RNA <- dd$regulate[match(countTable$gene,dd$genes)]
-    countTable$ProteinInsol <- dp1$regulate[match(countTable$gene,dp1$Gene.name)]
-    countTable$ProteinWcl <- dp2$regulate[match(countTable$gene,dp2$Gene.name)]
-    
-    countTable[is.na(countTable)] <- 0
-    countTable[countTable== -1] <- 1
-    
-    png(paste0("../img/proteomics/","Significant_Venndiagram_",cell, name,".png"),width = 500, height = 500)
-    venn(countTable[,-1],zcolor = "style", sncs =0.9, ilcs =0.85)
-    dev.off()
-    
+    self$regulation_table[[name]] <-dp1
     
     for(pro in c("CC","BP")){
-      geneID <- mapIds(org.Hs.eg.db, countTable$gene[countTable$RNA==1], 'ENTREZID', 'SYMBOL')
+      geneID <- mapIds(org.Hs.eg.db, dp1$Gene.name[dp1$regulate==1], 'ENTREZID', 'SYMBOL')
       gene.df <- bitr(geneID , fromType = "ENTREZID",
                       toType = c("ENSEMBL", "SYMBOL"),
                       OrgDb = org.Hs.eg.db)
@@ -444,76 +382,39 @@ TemplateProtein$set("public","compareRnaProtein", function(RNAInput){
       
       egos <-  clusterProfiler::simplify(ego, cutoff=0.7, by="p.adjust", select_fun=min)
       
-      #####
-      geneID2 <- mapIds(org.Hs.eg.db, countTable$gene[countTable$ProteinInsol==1], 'ENTREZID', 'SYMBOL')
-      gene.df2 <- bitr(geneID2 , fromType = "ENTREZID",
-                       toType = c("ENSEMBL", "SYMBOL"),
-                       OrgDb = org.Hs.eg.db)
-      
-      ego2 <- enrichGO(gene          = gene.df2$ENTREZID,
-                       # universe      = gene.df$SYMBOL,
-                       OrgDb         = org.Hs.eg.db,
-                       ont           = pro,
-                       pAdjustMethod = "BH",
-                       pvalueCutoff  = 0.01,
-                       qvalueCutoff  = 0.05)
-      
-      egos2 <-  clusterProfiler::simplify(ego2, cutoff=0.7, by="p.adjust", select_fun=min)
-      
-      ####
-      geneID3 <- mapIds(org.Hs.eg.db, countTable$gene[countTable$ProteinWcl==1], 'ENTREZID', 'SYMBOL')
-      gene.df3 <- bitr(geneID3 , fromType = "ENTREZID",
-                       toType = c("ENSEMBL", "SYMBOL"),
-                       OrgDb = org.Hs.eg.db)
-      
-      ego3 <- enrichGO(gene          = gene.df3$ENTREZID,
-                       # universe      = gene.df$SYMBOL,
-                       OrgDb         = org.Hs.eg.db,
-                       ont           = pro,
-                       pAdjustMethod = "BH",
-                       pvalueCutoff  = 0.01,
-                       qvalueCutoff  = 0.05)
-      
-      egos3 <-  clusterProfiler::simplify(ego3, cutoff=0.7, by="p.adjust", select_fun=min)
-      
-      egos@result$Cluster <- "RNA"
-      egos2@result$Cluster <- "ProteinInsol"
-      if(dim(egos3@result)[1]>0){
-        egos3@result$Cluster <- "ProteinWcl"
-      }
-      
-      egoList <- rbind(egos@result, egos2@result, egos3@result)%>% filter(qvalue<=0.05&p.adjust<=0.01)
-      egoList$GeneRatio <- round(unlist(lapply(egoList$GeneRatio, function(x) as.numeric(strsplit(x,"/")[[1]][1])/as.numeric(strsplit(x,"/")[[1]][2]))),2)
-      
-      
-      egoList$Symbol <- NA
-      for(i in 1:dim(egoList)[1]){
+      if(dim(egos@result)[1]>1){
+        egoList <- egos@result%>% filter(qvalue<=0.05&p.adjust<=0.01)
+        egoList$GeneRatio <- round(unlist(lapply(egoList$GeneRatio, function(x) as.numeric(strsplit(x,"/")[[1]][1])/as.numeric(strsplit(x,"/")[[1]][2]))),2)
         
-        geneID <- strsplit(egoList$geneID[i],"/")[[1]]
-        symbols <- mapIds(org.Hs.eg.db, geneID, 'SYMBOL', 'ENTREZID')
-        egoList$Symbol[i] <- paste(unname(symbols), collapse="|")
+        
+        egoList$Symbol <- NA
+        for(i in 1:dim(egoList)[1]){
+          
+          geneID <- strsplit(egoList$geneID[i],"/")[[1]]
+          symbols <- mapIds(org.Hs.eg.db, geneID, 'SYMBOL', 'ENTREZID')
+          egoList$Symbol[i] <- paste(unname(symbols), collapse="|")
+        }
+        
+        self$enrichment_table[[pro]][[name]] <- egoList
+        
+        qe <- ggplot(egoList, aes(x=Description, y=GeneRatio)) + 
+          geom_bar(stat='identity', aes(fill=p.adjust)) +
+          labs(title=paste(""), 
+               subtitle=ifelse(pro=="CC", paste("Cellular component",name),paste("Biological Process", name))) + 
+          scale_fill_gradient(low="blue", high="red")+
+          coord_flip()+
+          theme_bw()+
+          theme(axis.text.x = element_text(angle = 90))
+        
+        ggsave(file=paste0("../img/proteomics/",name,".Enrichment.",pro,".pdf"), qe, width=5+(dim(egoList)[1]/30), height=7+(dim(egoList)[1]/10), dpi=200)
+        ggsave(file=paste0("../img/proteomics/",name,".Enrichment.",pro,".png"), qe, width=5+(dim(egoList)[1]/30), height=7+(dim(egoList)[1]/10), dpi=200)
+        
       }
-      
-      self$enrichment_table[[pro]][[name]] <- egoList
-      
-      qe <- ggplot(egoList, aes(x=Description, y=Cluster)) + 
-        geom_point(stat='identity', aes(color=p.adjust, size=GeneRatio)) +
-        labs(title=paste("Comparison between RNA-Seq andproteomic data"), 
-             subtitle=ifelse(pro=="CC", "Cellular component","Biological Process")) + 
-        scale_color_gradient(low="blue", high="red")+
-        coord_flip()+
-        theme_bw()+
-        theme(axis.text.x = element_text(angle = 90))
-      
-      ggsave(file=paste0("../img/proteomics/",cell,".",name,".Enrichment.Comparison.",pro,".pdf"), qe, width=5+(dim(egoList)[1]/30), height=7+(dim(egoList)[1]/10), dpi=200)
-      ggsave(file=paste0("../img/proteomics/",cell,".",name,".Enrichment.Comparison.",pro,".png"), qe, width=5+(dim(egoList)[1]/30), height=7+(dim(egoList)[1]/10), dpi=200)
       
     }
-    
   }
-invisible(self)
+  invisible(self)
 })
-
 
 TemplateProtein$set("public","writeFiles", function(){
   
@@ -557,8 +458,7 @@ TemplateProtein$set("public","writeFiles", function(){
   invisible(self)
 })
 
-
-TemplateProtein$set("public","drawScatterplot", function(RNAInput){
+TemplateProtein$set("public","drawScatterplot", function(){
   sig <- c(self$df_significant$HEK293T_insol$Gene.name[self$df_significant$HEK293T_insol$Significant=="Yes"],
            self$df_significant$HEK293T_wcl$Gene.name[self$df_significant$HEK293T_wcl$Significant=="Yes"])
   
@@ -582,15 +482,8 @@ TemplateProtein$set("public","drawScatterplot", function(RNAInput){
   ggsave(file=paste0("../img/proteomics/Hek293T_scatterplot.png"), pS1, width=11, height=9, dpi=200)
   
   
-  
-  #self$df_significant$U2OS_insol
-  #self$df_significant$U2OS_wcl
-  
-  
   sig <- c(self$df_significant$U2OS_insol$Gene.name[self$df_significant$U2OS_insol$Significant=="Yes"],
            self$df_significant$U2OS_wcl$Gene.name[self$df_significant$U2OS_wcl$Significant=="Yes"])
-  
-  
   
   dx <- merge(self$df_significant$U2OS_insol[,c("Gene.name","log2foldChange")], 
               self$df_significant$U2OS_wcl[,c("Gene.name","log2foldChange")], by="Gene.name", all=T)
@@ -608,161 +501,6 @@ TemplateProtein$set("public","drawScatterplot", function(RNAInput){
   
   ggsave(file=paste0("../img/proteomics/U2OS_scatterplot.pdf"), pS2, width=11, height=9, dpi=200)
   ggsave(file=paste0("../img/proteomics/U2OS_scatterplot.png"), pS2, width=11, height=9, dpi=200)
-  
-  
-  
-  ###########################################################
-  #self$df_significant$U2OS_insol
-  #self$df_significant$U2OS_wcl
-  #RNAInput$rna_toptable$ATM.KO.vs.WT
-  
-  sig <- c(self$df_significant$U2OS_insol$Gene.name[self$df_significant$U2OS_insol$Significant=="Yes"],
-           self$df_significant$U2OS_wcl$Gene.name[self$df_significant$U2OS_wcl$Significant=="Yes"],
-           RNAInput$rna_toptable$ATM.KO.vs.WT$genes[abs(RNAInput$rna_toptable$ATM.KO.vs.WT$logFC)>1&RNAInput$rna_toptable$ATM.KO.vs.WT$FDR<0.05])
-  
-  sig_wcl <- c(self$df_significant$U2OS_wcl$Gene.name[self$df_significant$U2OS_wcl$Significant=="Yes"],
-               RNAInput$rna_toptable$ATM.KO.vs.WT$genes[abs(RNAInput$rna_toptable$ATM.KO.vs.WT$logFC)>1&RNAInput$rna_toptable$ATM.KO.vs.WT$FDR<0.05])
-  
-  sig_wcl_common <- intersect(self$df_significant$U2OS_wcl$Gene.name[self$df_significant$U2OS_wcl$Significant=="Yes"],
-                              RNAInput$rna_toptable$ATM.KO.vs.WT$genes[abs(RNAInput$rna_toptable$ATM.KO.vs.WT$logFC)>1&RNAInput$rna_toptable$ATM.KO.vs.WT$FDR<0.05])
-  
-  
-  sig_insol <- c(self$df_significant$U2OS_insol$Gene.name[self$df_significant$U2OS_insol$Significant=="Yes"],
-                 RNAInput$rna_toptable$ATM.KO.vs.WT$genes[abs(RNAInput$rna_toptable$ATM.KO.vs.WT$logFC)>1&RNAInput$rna_toptable$ATM.KO.vs.WT$FDR<0.05])
-  
-  sig_insol_common <- intersect(self$df_significant$U2OS_insol$Gene.name[self$df_significant$U2OS_insol$Significant=="Yes"],
-                                RNAInput$rna_toptable$ATM.KO.vs.WT$genes[abs(RNAInput$rna_toptable$ATM.KO.vs.WT$logFC)>1&RNAInput$rna_toptable$ATM.KO.vs.WT$FDR<0.05])
-  
-  
-  dx <- merge(self$df_significant$U2OS_insol[,c("Gene.name","log2foldChange")], 
-              self$df_significant$U2OS_wcl[,c("Gene.name","log2foldChange")], by="Gene.name", all=T)
-  
-  dxx <- merge(dx, RNAInput$rna_toptable$ATM.KO.vs.WT[,c("genes","logFC")], by.x="Gene.name", by.y = "genes", all=T)
-  
-  colnames(dxx) <- c("Gene.name","insol","wcl", "RNA")
-  
-  shade = data.frame(x1=c(-1, 1,-1,1), 
-                     x2=c(-Inf, Inf, -Inf, Inf),
-                     y1=c(-1,1,1,-1), 
-                     y2=c(-Inf, Inf, Inf, -Inf))
-  
-  pS3 <- ggplot(data=dxx[dxx$Gene.name %in% sig_wcl, ]) +
-    geom_rect(data=shade, 
-              mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill='grey95')+
-    geom_point(data =subset(dxx, !Gene.name %in% sig_wcl), aes(x = RNA, y = wcl) ,colour="gray", size=2, alpha= 0.5)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_wcl) , aes(x = RNA, y = wcl),colour="pink", size=3, alpha=1)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_wcl_common), aes(x = RNA, y = wcl) ,colour="red", size=3)+
-    geom_text_repel(data  = subset(dxx, Gene.name %in% sig_wcl_common),
-                    aes(x = RNA, y = wcl,label = Gene.name),
-                    segment.alpha =0.35,
-                    size = 4 ) +
-    geom_vline(xintercept = 1, col = "blue")+
-    geom_vline(xintercept = -1, col = "blue")+
-    geom_hline(yintercept = -1, col = "green")+
-    geom_hline(yintercept = 1, col = "green")+
-    ggtitle("U2OS Wcl")+
-    theme_classic()
-  
-  
-  pS4 <- ggplot(dxx[dxx$Gene.name %in% sig_insol, ]) +
-    geom_rect(data=shade, 
-              mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill='grey95')+
-    geom_point(data =subset(dxx, !Gene.name %in% sig_insol), aes(x = RNA, y = insol) ,colour="gray", size=2, alpha= 0.5)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_insol) , aes(x = RNA, y = insol),colour="pink", size=3, alpha=1)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_insol_common), aes(x = RNA, y = insol) ,colour="red", size=3)+
-    geom_text_repel(data  = subset(dxx, Gene.name %in% sig_insol_common),
-                    aes(x = RNA, y = insol,label = Gene.name),
-                    segment.alpha =0.35,
-                    size = 4 ) +
-    geom_vline(xintercept = 1, col = "blue")+
-    geom_vline(xintercept = -1, col = "blue")+
-    geom_hline(yintercept = -1, col = "green")+
-    geom_hline(yintercept = 1, col = "green")+
-    scale_y_reverse()+
-    ggtitle("U2OS Insol")+
-    theme_classic()
-  
-  ps <- grid.arrange(pS3, pS4 , 
-                     ncol = 1, nrow = 2)
-  ggsave(file=paste0("../img/proteomics/U2OS_RNA_scatterplot.pdf"), ps, width=11, height=11, dpi=200)
-  ggsave(file=paste0("../img/proteomics/U2OS_RNA_scatterplot.png"), ps, width=11, height=11, dpi=200)
-  
-  ################################
-  
-  #self$df_significant$HEK293T_insol
-  #self$df_significant$HEK293T_wcl
-  #RNAInput$rna_toptable$CPT.vs.DMSO
-  
-  sig <- c(self$df_significant$HEK293T_insol$Gene.name[self$df_significant$HEK293T_insol$Significant=="Yes"],
-           self$df_significant$HEK293T_wcl$Gene.name[self$df_significant$HEK293T_wcl$Significant=="Yes"],
-           RNAInput$rna_toptable$CPT.vs.DMSO$genes[abs(RNAInput$rna_toptable$CPT.vs.DMSO$logFC)>1&RNAInput$rna_toptable$CPT.vs.DMSO$FDR<0.05])
-  
-  sig_wcl <- c(self$df_significant$HEK293T_wcl$Gene.name[self$df_significant$HEK293T_wcl$Significant=="Yes"],
-               RNAInput$rna_toptable$CPT.vs.DMSO$genes[abs(RNAInput$rna_toptable$CPT.vs.DMSO$logFC)>1&RNAInput$rna_toptable$CPT.vs.DMSO$FDR<0.05])
-  
-  sig_wcl_common <- intersect(self$df_significant$HEK293T_wcl$Gene.name[self$df_significant$HEK293T_wcl$Significant=="Yes"],
-                              RNAInput$rna_toptable$CPT.vs.DMSO$genes[abs(RNAInput$rna_toptable$CPT.vs.DMSO$logFC)>1&RNAInput$rna_toptable$CPT.vs.DMSO$FDR<0.05])
-  
-  
-  sig_insol <- c(self$df_significant$HEK293T_insol$Gene.name[self$df_significant$HEK293T_insol$Significant=="Yes"],
-                 RNAInput$rna_toptable$CPT.vs.DMSO$genes[abs(RNAInput$rna_toptable$CPT.vs.DMSO$logFC)>1&RNAInput$rna_toptable$CPT.vs.DMSO$FDR<0.05])
-  
-  sig_insol_common <- intersect(self$df_significant$HEK293T_insol$Gene.name[self$df_significant$HEK293T_insol$Significant=="Yes"],
-                                RNAInput$rna_toptable$CPT.vs.DMSO$genes[abs(RNAInput$rna_toptable$CPT.vs.DMSO$logFC)>1&RNAInput$rna_toptable$CPT.vs.DMSO$FDR<0.05])
-  
-  
-  dx <- merge(self$df_significant$HEK293T_insol[,c("Gene.name","log2foldChange")], 
-              self$df_significant$HEK293T_wcl[,c("Gene.name","log2foldChange")], by="Gene.name", all=T)
-  
-  dxx <- merge(dx, RNAInput$rna_toptable$CPT.vs.DMSO[,c("genes","logFC")], by.x="Gene.name", by.y = "genes", all=T)
-  
-  colnames(dxx) <- c("Gene.name","insol","wcl", "RNA")
-  
-  shade = data.frame(x1=c(-1, 1,-1,1), 
-                     x2=c(-Inf, Inf, -Inf, Inf),
-                     y1=c(-1,1,1,-1), 
-                     y2=c(-Inf, Inf, Inf, -Inf))
-  
-  pS3 <- ggplot(data=dxx[dxx$Gene.name %in% sig_wcl, ]) +
-    geom_rect(data=shade, 
-              mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill='grey95')+
-    geom_point(data =subset(dxx, !Gene.name %in% sig_wcl), aes(x = RNA, y = wcl) ,colour="gray", size=2, alpha= 0.5)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_wcl) , aes(x = RNA, y = wcl),colour="pink", size=3, alpha=1)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_wcl_common), aes(x = RNA, y = wcl) ,colour="red", size=3)+
-    geom_text_repel(data  = subset(dxx, Gene.name %in% sig_wcl_common),
-                    aes(x = RNA, y = wcl,label = Gene.name),
-                    segment.alpha =0.35,
-                    size = 4) +
-    geom_vline(xintercept = 1, col = "blue")+
-    geom_vline(xintercept = -1, col = "blue")+
-    geom_hline(yintercept = -1, col = "green")+
-    geom_hline(yintercept = 1, col = "green")+
-    ggtitle("HEK293T Wcl")+
-    theme_classic()
-  
-  
-  pS4 <- ggplot(dxx[dxx$Gene.name %in% sig_insol, ]) +
-    geom_rect(data=shade, 
-              mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill='grey95')+
-    geom_point(data =subset(dxx, !Gene.name %in% sig_insol), aes(x = RNA, y = insol) ,colour="gray", size=2, alpha= 0.5)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_insol) , aes(x = RNA, y = insol),colour="pink", size=3, alpha=1)+
-    geom_point(data =subset(dxx, Gene.name %in% sig_insol_common), aes(x = RNA, y = insol) ,colour="red", size=3)+
-    geom_text_repel(data  = subset(dxx, Gene.name %in% sig_insol_common),
-                    aes(x = RNA, y = insol,label = Gene.name),
-                    segment.alpha =0.35,
-                    size = 4 ) +
-    geom_vline(xintercept = 1, col = "blue")+
-    geom_vline(xintercept = -1, col = "blue")+
-    geom_hline(yintercept = -1, col = "green")+
-    geom_hline(yintercept = 1, col = "green")+
-    scale_y_reverse()+
-    ggtitle("HEK293T Insol")+
-    theme_classic()
-  
-  ps <- grid.arrange(pS3, pS4 , 
-                     ncol = 1, nrow = 2)
-  ggsave(file=paste0("../img/proteomics/HEK293T_RNA_scatterplot.pdf"), ps, width=11, height=11, dpi=200)
-  ggsave(file=paste0("../img/proteomics/HEK293T_RNA_scatterplot.png"), ps, width=11, height=11, dpi=200)
   
   invisible(self)
   

@@ -14,15 +14,14 @@ setwd(
 )
 
 set.seed(123)
-CRAN.packages <- c("rstatix","readr","readxl", "xlsx","data.table","reshape2","dplyr","magrittr","fpc","cluster","dendextend","edgeR","gplots","DESeq2",
+CRAN.packages <- c("rstatix","readr","readxl", "xlsx","data.table","reshape2","dplyr","magrittr","fpc","cluster","dendextend","gplots",
                    "igraph","sqldf","stringr","corrplot","ggplot2","R6","ggridges","progress","heatmaply","phylogram","Biostrings","ape",
-                   "gridExtra","ggrepel","rgl","venn", "writexl","outliers","ggforce", "gtable","factoextra","foreach",'doParallel','BayesFactor')
+                   "gridExtra","ggrepel","rgl","venn", "writexl","outliers","ggforce", "gtable","factoextra","foreach",'BayesFactor')
 bioconductor.packages <- c("PTXQC","org.Hs.eg.db","clusterProfiler","ReactomePA", "AnnotationHub","DOSE")
 
 source("functions/Functions.R")
 install.packages.if.necessary(CRAN.packages,bioconductor.packages)
 source("functions/Anova_Analysis.R")
-source("functions/DE_Analysis.R")
 input.dir <- "C:/MQ_projects/2.MQ_runs/Wouter_project/txt"
 #runQC(input.dir)
 
@@ -30,22 +29,17 @@ input.dir <- "C:/MQ_projects/2.MQ_runs/Wouter_project/txt"
 Comparison <- rbind(cbind(rep("HEK293T",4),c(rep(c("CPT",'DMSO'),2)),c(rep("insol",2),rep("wcl",2))),
                     cbind(rep("U2OS",4),c(rep(c("ATM",'WT'),2)),c(rep("insol",2),rep("wcl",2))))
 
-RNAInput <- TemplateRna$
-  new()$
-  importInput()$
-  makeEdgeList()$
-  diffExpression()
 
 MSInput <- TemplateProtein$new()$
   importInput(input.dir)$
   removeContaminant()$
   transformData()$
   choosingConditions(Comparison)$
-  visualize(Comparison)$
   anovaAnalysis(Comparison)$
-  compareRnaProtein(RNAInput)$
-  writeFiles()$
-  drawScatterplot(RNAInput)
+  visualize(Comparison)$
+  enrichment()$
+  drawScatterplot()$
+ # writeFiles()
 
 
-save(MSInput,RNAInput, file='backUp.RData')
+save(MSInput, file='backUp.RData')
